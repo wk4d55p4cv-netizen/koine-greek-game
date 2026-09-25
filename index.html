@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Koine Greek Function Words — Quiz Game</title>
+<style>
+:root{--blue:#0b3d91;--gold:#d4af37;--ink:#172033;--paper:#fffdf7}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:linear-gradient(135deg,#eaf2ff,#fff8df);color:var(--ink)}
+.wrap{max-width:900px;margin:auto;padding:18px}.card{background:var(--paper);border:5px double var(--gold);border-radius:18px;box-shadow:0 10px 30px #0002;overflow:hidden}
+header{background:var(--blue);color:white;padding:24px;text-align:center;border-bottom:5px solid var(--gold);position:relative}
+header:before,header:after{content:"Α Ω";position:absolute;color:#d4af37;font-size:22px;font-weight:800;top:12px}header:before{left:16px}header:after{right:16px}
+h1{margin:0;font-size:clamp(24px,6vw,38px)}.sub{margin:6px 0 0;opacity:.9}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;padding:14px;border-bottom:1px solid #ddd}.toolbar button,.primary,.secondary{border:2px solid var(--blue);background:white;color:var(--blue);padding:10px 14px;border-radius:10px;font-weight:700;cursor:pointer}.toolbar button:hover,.secondary:hover{background:#edf4ff}
+main{padding:20px}.hidden{display:none!important}.stats{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-weight:700}.pill{background:#eef4ff;padding:8px 12px;border-radius:999px}.progress{height:10px;background:#ddd;border-radius:99px;overflow:hidden;margin:14px 0 22px}.bar{height:100%;background:var(--gold);width:0;transition:.25s}
+.prompt{text-align:center;font-size:18px;font-weight:700}.term{text-align:center;font-size:clamp(34px,9vw,58px);font-weight:800;color:var(--blue);margin:20px 0;word-break:break-word}
+.answers{display:grid;grid-template-columns:1fr 1fr;gap:12px}.choice{min-height:68px;border:2px solid #b8c3d9;background:white;border-radius:12px;padding:12px;font-size:17px;font-weight:700;cursor:pointer}.choice:hover:not(:disabled){border-color:var(--blue);background:#f1f6ff}.choice.correct{border-color:#16803c;background:#e9f8ee}.choice.wrong{border-color:#b42318;background:#fff0ee}.choice:disabled{cursor:default}
+.feedback{text-align:center;min-height:32px;margin:18px 0;font-weight:800}.good{color:#16803c}.bad{color:#b42318}.next{display:none;margin:0 auto}
+.panel h2{text-align:center;color:var(--blue)}.search{display:flex;gap:8px;margin-bottom:14px}.search input{flex:1;padding:11px;border:2px solid #ccd3df;border-radius:10px;font-size:16px}.vocabTable{width:100%;border-collapse:collapse}.vocabTable th,.vocabTable td{padding:9px;border-bottom:1px solid #ddd;text-align:left}.vocabTable th{background:#edf4ff}.vocabGreek{font-size:20px;font-weight:800;color:var(--blue)}
+.groups{display:grid;grid-template-columns:1fr 1fr;gap:10px}.groupCard{padding:14px;text-align:left;border:2px solid #ccd3df;border-radius:12px;background:white;cursor:pointer}.groupCard:hover{border-color:var(--blue);background:#f5f8ff}.groupCard strong{display:block;color:var(--blue);font-size:17px}.groupCard span{display:block;margin-top:6px;font-size:14px;line-height:1.5}
+.center{text-align:center}.scoreBig{font-size:52px;font-weight:900;color:var(--blue)}@media(max-width:600px){.answers,.groups{grid-template-columns:1fr}.wrap{padding:8px}main{padding:14px}}
+</style>
+</head>
+<body><div class="wrap"><div class="card">
+<header><h1>Koine Greek Function Words</h1><div class="sub">Quiz Game</div></header>
+<div class="toolbar">
+<button id="vocabBtn">📖 Vocabulary List</button>
+<button id="groupsBtn">🏛️ Word Groups</button>
+<label style="display:flex;align-items:center;gap:7px;margin-left:auto">Direction
+<select id="direction"><option value="mixed">Mixed</option><option value="greek">Greek → English</option><option value="english">English → Greek</option></select></label>
+</div>
+<main>
+<section id="game"><div class="stats"><span class="pill">Score: <b id="score">0</b></span><span class="pill">Streak: <b id="streak">0</b></span><span class="pill">Question <b id="qnum">1</b>/<b id="total">30</b></span></div>
+<div class="progress"><div class="bar" id="bar"></div></div><div class="prompt" id="prompt"></div><div class="term" id="term"></div><div id="answerArea"></div><div id="feedback" class="feedback"></div><button id="next" class="primary next">Next →</button></section>
+<section id="results" class="hidden center"><h2>Round Complete!</h2><div class="scoreBig" id="finalScore"></div><p id="finalMessage"></p><p id="finalStats"></p><button id="playAgain" class="primary">🔄 Play Again</button></section>
+<section id="vocabPanel" class="hidden panel"><h2>📖 Vocabulary List</h2><div class="search"><input id="vocabSearch" placeholder="Search Greek or English"><button id="clearSearch" class="secondary">Clear</button></div><p id="vocabCount"></p><div id="vocabList"></div><p><button id="backToGame" class="secondary">← Back to Game</button></p></section>
+<section id="groupsPanel" class="hidden panel"><h2>🏛️ Quiz by Word Group</h2><p>Choose words that are closely related in meaning.</p><div class="groups" id="groupButtons"></div><p><button id="backFromGroups" class="secondary">← Back to Game</button></p></section>
+</main></div></div>
+<script>
+const bank=[
+["οὗτος","this / these"],["αὕτη","this / these"],["τοῦτο","this / this thing"],["οὗτοι","these"],["αὗται","these"],["ταῦτα","these things"],
+["ἐκεῖνος","that / those"],["ἐκείνη","that"],["ἐκεῖνο","that thing"],["ἐκεῖνοι","those"],["ἐκείναι","those"],["ἐκεῖνα","those things"],
+["ὅς","who / which / that"],["ἥ","who / which / that"],["ὅ","who / which / that"],["οἵ","who / which / that"],["αἵ","who / which / that"],["ἅ","who / which / that"],
+["τίς","who? / what? / which?"],["τί","what? / which?"],["τίνα","whom? / what? / which?"],["τίνος","whose? / of whom? / of what?"],["τίνι","to whom? / for whom?"],
+["τις","someone / anyone"],["τι","something / anything"],["πᾶς","all / every / each"],["πᾶσα","all / every / each"],["πᾶν","all / every / each"],["πάντες","all / everyone"],["πάντα","all things / everything"],
+["πολλοί","many"],["πολλά","many / much / many things"],["πολλούς","many"],["εἷς","one"],["μία","one"],["ἕν","one"],["ἕνα","one"],
+["εἰ","if"],["ἐάν","if / if ever"],["καί","and / also / even"],["ἤ","or / than"],["δέ","but / and / now"],["ἀλλά","but"],["μέν...δέ","on the one hand...but/on the other hand"],
+["γάρ","for / because"],["ὅτι","that / because"],["ἵνα","in order that / so that"],["ὅταν","when / whenever"],["ὅτε","when"],["ἐπειδή","when / because / since"],["ὅπου","where / wherever"],
+["οὐ","not"],["οὐκ","not"],["οὐχ","not"],["μή","not"],["μόνον","only"],["μόνος","only / alone"],["μόνη","only / alone"],
+["ἤδη","already / now"],["νῦν","now"],["ἄρτι","just now / now"],["τότε","then"],["οὖν","therefore / so / then"],["οὕτως","thus / in this way"],["διό","therefore / for which reason"],
+["ὧδε","here / in this way"],["ἐκεῖ","there"],["ἐνθάδε","here"],["ἐκεῖθεν","from there"],["ποῦ","where?"],["ὅπου","where / wherever"],["ὅπου ἐάν","wherever"],
+["πῶς","how? / in what way?"],["ὡς","as / how / that"],["πολύς","much / many"],["πολλή","much / many"],["πολύ","much / many"],
+["ἐκ / ἐξ","from / out of"],["ἀπό","from / away from"],["ἐν","in / among"],["εἰς","into / to"],["διά","through / because of"],["μετά","with / after"],["παρά","from / beside / with"],["περί","about / concerning / around"],["πρός","to / toward / with"],["ὑπό","by / under"],["ὑπέρ","for / on behalf of / above"],["κατά","according to / down / against"],["ἀνά","up / each"]
+];
+const groups=[
+["This / These",["οὗτος","αὕτη","τοῦτο","οὗτοι","αὗται","ταῦτα"]],["That / Those",["ἐκεῖνος","ἐκείνη","ἐκεῖνο","ἐκεῖνοι","ἐκείναι","ἐκεῖνα"]],
+["Who / Which / That",["ὅς","ἥ","ὅ","οἵ","αἵ","ἅ"]],["Who? / What? / Which?",["τίς","τί","τίνα","τίνος","τίνι"]],["Someone / Something",["τις","τι"]],
+["All / Every / Each",["πᾶς","πᾶσα","πᾶν","πάντες","πάντα"]],["One",["εἷς","μία","ἕν","ἕνα"]],["If",["εἰ","ἐάν"]],
+["And / Or / But",["καί","ἤ","δέ","ἀλλά","μέν...δέ"]],["For / Because / That",["γάρ","ὅτι","ἵνα"]],["When / Whenever / Where",["ὅταν","ὅτε","ἐπειδή","ὅπου","ὅπου ἐάν"]],
+["Not",["οὐ","οὐκ","οὐχ","μή"]],["Only / Alone",["μόνον","μόνος","μόνη"]],["Already / Now",["ἤδη","νῦν","ἄρτι"]],
+["Then / Therefore / Thus",["τότε","οὖν","οὕτως","διό"]],["Here / There",["ὧδε","ἐκεῖ","ἐνθάδε","ἐκεῖθεν"]],["Where / How",["ποῦ","πῶς","ὡς"]],
+["Much / Many",["πολύς","πολλή","πολύ","πολλοί","πολλά","πολλούς"]],["Prepositions: From / In / To",["ἐκ / ἐξ","ἀπό","ἐν","εἰς"]],
+["Prepositions: Through / With / Beside",["διά","μετά","παρά"]],["Prepositions: About / Toward / By",["περί","πρός","ὑπό"]],["Prepositions: For / According To / Up",["ὑπέρ","κατά","ἀνά"]]
+];
+const $=id=>document.getElementById(id), norm=s=>s.toLowerCase().trim().replace(/[.,!?;:()[\]{}]/g,"").replace(/\s+/g," ");
+let questions=[],index=0,score=0,streak=0,total=30;
+function pick(a){return a[Math.floor(Math.random()*a.length)]}
+function startGame(){total=30;questions=[];const p=[...bank];while(questions.length<30){const x=pick(p);questions.push(x);p.splice(p.indexOf(x),1);if(!p.length)p.push(...bank)}score=0;streak=0;index=0;showGame();render()}
+function showGame(){$("game").classList.remove("hidden");$("results").classList.add("hidden");$("vocabPanel").classList.add("hidden");$("groupsPanel").classList.add("hidden")}
+function render(){const [g,e]=questions[index];$("total").textContent=total;$("qnum").textContent=index+1;$("score").textContent=score;$("streak").textContent=streak;$("bar").style.width=(index/total*100)+"%";$("feedback").textContent="";$("feedback").className="feedback";$("next").style.display="none";let d=$("direction").value;if(d==="mixed")d=Math.random()<.5?"g":"e";$("prompt").textContent=d==="g"?"What does this mean?":"Which Greek word/form matches this meaning?";$("term").textContent=d==="g"?g:e;let correct=d==="g"?e:g,choices=[correct];while(choices.length<4){let c=pick(bank)[d==="g"?1:0];if(!choices.includes(c))choices.push(c)}choices.sort(()=>Math.random()-.5);$("answerArea").innerHTML='<div class="answers">'+choices.map(c=>'<button class="choice">'+c+'</button>').join("")+'</div>';document.querySelectorAll(".choice").forEach(b=>b.onclick=()=>answer(b,correct))}
+function answer(btn,correct){const ok=norm(btn.textContent)===norm(correct);btn.classList.add(ok?"correct":"wrong");if(!ok)document.querySelectorAll(".choice").forEach(b=>{if(norm(b.textContent)===norm(correct))b.classList.add("correct")});score+=ok?1:0;streak=ok?streak+1:0;$("score").textContent=score;$("streak").textContent=streak;$("feedback").textContent=ok?"✅ Correct!":"❌ Correct answer: "+correct;$("feedback").className="feedback "+(ok?"good":"bad");document.querySelectorAll(".choice").forEach(b=>b.disabled=true);$("next").style.display="block"}
+$("next").onclick=()=>{if(index<total-1){index++;render()}else finish()};
+function finish(){$("game").classList.add("hidden");$("results").classList.remove("hidden");$("bar").style.width="100%";const pct=Math.round(score/total*100);$("finalScore").textContent=score+" / "+total;$("finalMessage").textContent=pct===100?"🔥 Perfect!":pct>=90?"🏆 Excellent work!":pct>=75?"💪 Solid work — keep drilling.":pct>=60?"📚 Good start — another round will help.":"🔁 Keep practicing — repetition will help.";$("finalStats").textContent=pct+"% correct • Final streak: "+streak}
+$("playAgain").onclick=startGame;$("direction").onchange=()=>{if(!$("game").classList.contains("hidden"))render()};
+$("vocabBtn").onclick=()=>{$("game").classList.add("hidden");$("results").classList.add("hidden");$("groupsPanel").classList.add("hidden");$("vocabPanel").classList.remove("hidden");renderVocab()};
+$("groupsBtn").onclick=()=>{$("game").classList.add("hidden");$("results").classList.add("hidden");$("vocabPanel").classList.add("hidden");$("groupsPanel").classList.remove("hidden");renderGroups()};
+$("backToGame").onclick=showGame;$("backFromGroups").onclick=showGame;
+function renderVocab(){const q=norm($("vocabSearch").value);const rows=bank.filter(x=>!q||norm(x[0]).includes(q)||norm(x[1]).includes(q));$("vocabCount").textContent="Showing "+rows.length+" of "+bank.length+" entries";$("vocabList").innerHTML='<table class="vocabTable"><tr><th>Greek</th><th>Meaning</th></tr>'+rows.map(x=>'<tr><td class="vocabGreek">'+x[0]+'</td><td>'+x[1]+'</td></tr>').join("")+'</table>'}
+$("vocabSearch").oninput=renderVocab;$("clearSearch").onclick=()=>{$("vocabSearch").value="";renderVocab()};
+function renderGroups(){$("groupButtons").innerHTML=groups.map((x,i)=>'<button class="groupCard" data-i="'+i+'"><strong>'+x[0]+'</strong><span>'+x[1].join(" • ")+'</span></button>').join("");document.querySelectorAll(".groupCard").forEach(b=>b.onclick=()=>startGroup(groups[+b.dataset.i]))}
+function startGroup(gr){questions=gr[1].map(t=>bank.find(x=>x[0]===t)).filter(Boolean);questions.sort(()=>Math.random()-.5);total=questions.length;score=0;streak=0;index=0;showGame();render()}
+startGame();
+</script></body></html>
