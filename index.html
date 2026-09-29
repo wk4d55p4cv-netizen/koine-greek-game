@@ -50,7 +50,11 @@ const bank=[
 ["ἤδη","already / now"],["νῦν","now"],["ἄρτι","just now / now"],["τότε","then"],["οὖν","therefore / so / then"],["οὕτως","thus / in this way"],["διό","therefore / for which reason"],
 ["ὧδε","here / in this way"],["ἐκεῖ","there"],["ἐνθάδε","here"],["ἐκεῖθεν","from there"],["ποῦ","where?"],["ὅπου","where / wherever"],["ὅπου ἐάν","wherever"],
 ["πῶς","how? / in what way?"],["ὡς","as / how / that"],["πολύς","much / many"],["πολλή","much / many"],["πολύ","much / many"],
-["ἐκ / ἐξ","from / out of"],["ἀπό","from / away from"],["ἐν","in / among"],["εἰς","into / to"],["διά","through / because of"],["μετά","with / after"],["παρά","from / beside / with"],["περί","about / concerning / around"],["πρός","to / toward / with"],["ὑπό","by / under"],["ὑπέρ","for / on behalf of / above"],["κατά","according to / down / against"],["ἀνά","up / each"]
+["ἐκ / ἐξ","from / out of"],["ἀπό","from / away from"],["ἐν","in / among"],["εἰς","into / to"],["διά","through / because of"],["μετά","with / after"],["παρά","from / beside / with"],["περί","about / concerning / around"],["πρός","to / toward / with"],["ὑπό","by / under"],["ὑπέρ","for / on behalf of / above"],["κατά","according to / down / against"],["ἀνά","up / each"],
+["ὑμεῖς","you / you all (plural)"],["ὑμῶν","of you / your (plural)"],["ὑμῖν","to you / for you (plural)"],["ὑμᾶς","you (plural)"],
+["εἰμί","I am"],["εἶ","you are (singular)"],["ἐστί(ν)","he / she / it is"],["ἐσμέν","we are"],["ἐστέ","you are (plural)"],["εἰσί(ν)","they are"],
+["ἤμην","I was"],["ἦς","you were (singular)"],["ἦν","he / she / it was"],["ἦμεν","we were"],["ἦτε","you were (plural)"],["ἦσαν","they were"],
+["ἔσομαι","I will be"],["ἔσῃ","you will be (singular)"],["ἔσται","he / she / it will be"],["ἐσόμεθα","we will be"],["ἔσεσθε","you will be (plural)"],["ἔσονται","they will be"],["εἶναι","to be"]
 ];
 const groups=[
 ["This / These",["οὗτος","αὕτη","τοῦτο","οὗτοι","αὗται","ταῦτα"]],["That / Those",["ἐκεῖνος","ἐκείνη","ἐκεῖνο","ἐκεῖνοι","ἐκείναι","ἐκεῖνα"]],
@@ -60,7 +64,9 @@ const groups=[
 ["Not",["οὐ","οὐκ","οὐχ","μή"]],["Only / Alone",["μόνον","μόνος","μόνη"]],["Already / Now",["ἤδη","νῦν","ἄρτι"]],
 ["Then / Therefore / Thus",["τότε","οὖν","οὕτως","διό"]],["Here / There",["ὧδε","ἐκεῖ","ἐνθάδε","ἐκεῖθεν"]],["Where / How",["ποῦ","πῶς","ὡς"]],
 ["Much / Many",["πολύς","πολλή","πολύ","πολλοί","πολλά","πολλούς"]],["Prepositions: From / In / To",["ἐκ / ἐξ","ἀπό","ἐν","εἰς"]],
-["Prepositions: Through / With / Beside",["διά","μετά","παρά"]],["Prepositions: About / Toward / By",["περί","πρός","ὑπό"]],["Prepositions: For / According To / Up",["ὑπέρ","κατά","ἀνά"]]
+["Prepositions: Through / With / Beside",["διά","μετά","παρά"]],["Prepositions: About / Toward / By",["περί","πρός","ὑπό"]],["Prepositions: For / According To / Up",["ὑπέρ","κατά","ἀνά"]],
+["You (Plural) — ὑμεῖς Forms",["ὑμεῖς","ὑμῶν","ὑμῖν","ὑμᾶς"]],
+["εἰμί — To Be",["εἰμί","εἶ","ἐστί(ν)","ἐσμέν","ἐστέ","εἰσί(ν)","ἤμην","ἦς","ἦν","ἦμεν","ἦτε","ἦσαν","ἔσομαι","ἔσῃ","ἔσται","ἐσόμεθα","ἔσεσθε","ἔσονται","εἶναι"]]
 ];
 const $=id=>document.getElementById(id), norm=s=>s.toLowerCase().trim().replace(/[.,!?;:()[\]{}]/g,"").replace(/\s+/g," ");
 let questions=[],index=0,score=0,streak=0,total=30;
